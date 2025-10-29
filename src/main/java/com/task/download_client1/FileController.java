@@ -21,16 +21,21 @@ public class FileController {
     @PostConstruct
     public void createSampleFile() throws IOException {
         Files.createDirectories(filePath.getParent());
-        if (!Files.exists(filePath) || Files.size(filePath) < 100_000_000L) {
+        long targetSize = 100_000_000L;
+        if (!Files.exists(filePath) || Files.size(filePath) < targetSize) {
             try (OutputStream os = Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-                byte[] buffer = new byte[1024 * 1024]; // 1MB buffer
-                for (int i = 0; i < 100; i++) os.write(buffer);
+                byte[] buffer = new byte[1024 * 1024];
+                long written = 0;
+                while (written < targetSize) {
+                    os.write(buffer);
+                    written += buffer.length;
+                }
             }
         }
     }
 
-    //for API aka postman to call and save in folder, root of this repo
-    @GetMapping("/file/download")
+    //for API aka postman to call and save in folder
+    @GetMapping("/create-file")
     public ResponseEntity<InputStreamResource> downloadFile() throws IOException {
         InputStreamResource resource = new InputStreamResource(Files.newInputStream(filePath));
         return ResponseEntity.ok()
