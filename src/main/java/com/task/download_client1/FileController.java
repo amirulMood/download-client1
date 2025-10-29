@@ -14,13 +14,14 @@ import java.nio.file.*;
 @RestController
 public class FileController {
 
-    private final Path filePath = Path.of("data", "sample-100mb.bin");
+    //This is to setup the path and name of the file/type
+    private final Path filePath = Path.of("HOME", "file_to_download.txt").toAbsolutePath();
 
+    //simply runs when starting the project, make a file
     @PostConstruct
     public void createSampleFile() throws IOException {
         Files.createDirectories(filePath.getParent());
         if (!Files.exists(filePath) || Files.size(filePath) < 100_000_000L) {
-            System.out.println("Generating sample 100MB file...");
             try (OutputStream os = Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 byte[] buffer = new byte[1024 * 1024]; // 1MB buffer
                 for (int i = 0; i < 100; i++) os.write(buffer);
@@ -28,11 +29,12 @@ public class FileController {
         }
     }
 
+    //for API aka postman to call and save in folder, root of this repo
     @GetMapping("/file/download")
     public ResponseEntity<InputStreamResource> downloadFile() throws IOException {
         InputStreamResource resource = new InputStreamResource(Files.newInputStream(filePath));
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"sample-100mb.bin\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"file_to_download.txt\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(Files.size(filePath))
                 .body(resource);
