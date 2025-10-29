@@ -15,7 +15,7 @@ import java.nio.file.*;
 public class FileController {
 
     //This is to setup the path and name of the file/type
-    private final Path filePath = Path.of("HOME", "file_to_download.txt").toAbsolutePath();
+    private final Path filePath = Path.of("HOME", "file_to_download_client1.txt").toAbsolutePath();
 
     //make the file 100mb thats it
     @PostConstruct
@@ -39,7 +39,7 @@ public class FileController {
     public ResponseEntity<InputStreamResource> downloadFile() throws IOException {
         InputStreamResource resource = new InputStreamResource(Files.newInputStream(filePath));
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"file_to_download.txt\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"file_to_download_client1.txt\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(Files.size(filePath))
                 .body(resource);
