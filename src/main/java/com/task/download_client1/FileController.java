@@ -17,7 +17,7 @@ public class FileController {
     //This is to setup the path and name of the file/type
     private final Path filePath = Path.of("HOME", "file_to_download.txt").toAbsolutePath();
 
-    //simply runs when starting the project, make a file
+    //make the file 100mb thats it
     @PostConstruct
     public void createSampleFile() throws IOException {
         Files.createDirectories(filePath.getParent());
